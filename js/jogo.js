@@ -249,49 +249,51 @@ let touchElement = null;
 
 // Função chamada ao iniciar o toque
 function touchStart(ev) {
-  touchStartX = ev.touches[0].clientX;
-  touchStartY = ev.touches[0].clientY;
-  touchElement = ev.target;
+    ev.preventDefault();
+    touchStartX = ev.touches[0].clientX;
+    touchStartY = ev.touches[0].clientY;
+    touchElement = ev.target;
 
-  // Verifica se a carta está virada para cima antes de permitir o movimento
-  if (!touchElement.classList.contains("carta-virada")) {
-    touchElement = null;
-  }
+    // Verifica se a carta está virada para cima antes de permitir o movimento
+    if (!touchElement.classList.contains("carta-virada")) {
+        touchElement = null;
+    }
 }
+
 
 // Função chamada ao mover o toque
 function touchMove(ev) {
-  if (!touchElement) return;
+    if (!touchElement) return;
 
-  ev.preventDefault();
-  const touchMoveX = ev.touches[0].clientX;
-  const touchMoveY = ev.touches[0].clientY;
+    ev.preventDefault();
+    const touchMoveX = ev.touches[0].clientX;
+    const touchMoveY = ev.touches[0].clientY;
 
-  const deltaX = touchMoveX - touchStartX;
-  const deltaY = touchMoveY - touchStartY;
+    const deltaX = touchMoveX - touchStartX;
+    const deltaY = touchMoveY - touchStartY;
 
-  touchElement.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+    touchElement.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
 }
 
 // Função chamada ao finalizar o toque
 function touchEnd(ev) {
-  if (!touchElement) return;
+    if (!touchElement) return;
 
-  ev.preventDefault();
-  touchElement.style.transform = '';
+    ev.preventDefault();
+    touchElement.style.transform = '';
 
-  const touchEndX = ev.changedTouches[0].clientX;
-  const touchEndY = ev.changedTouches[0].clientY;
+    const touchEndX = ev.changedTouches[0].clientX;
+    const touchEndY = ev.changedTouches[0].clientY;
 
-  const dropElement = document.elementFromPoint(touchEndX, touchEndY);
+    const dropElement = document.elementFromPoint(touchEndX, touchEndY);
 
-  if (dropElement && dropElement.ondrop) {
-    const event = new Event('drop', { bubbles: true });
-    event.dataTransfer = {
-      getData: () => touchElement.id
-    };
-    dropElement.dispatchEvent(event);
-  }
+    if (dropElement && dropElement.ondrop) {
+        const event = new Event('drop', { bubbles: true });
+        event.dataTransfer = {
+            getData: () => touchElement.id
+        };
+        dropElement.dispatchEvent(event);
+    }
 }
 
 function main() {
@@ -346,9 +348,22 @@ function main() {
 
 
 
+// Adiciona eventos de toque para as cartas
+document.querySelectorAll('.carta').forEach(carta => {
+    carta.addEventListener('touchstart', touchStart, false);
+    carta.addEventListener('touchmove', touchMove, false);
+    carta.addEventListener('touchend', touchEnd, false);
+});
+
 // Adiciona evento de toque na área de estoque
-document.getElementById("estoque").addEventListener("touchstart", function() {
-  jogo.descartar_carta();
+document.getElementById("estoque").addEventListener("touchstart", function(ev) {
+    ev.preventDefault();
+    jogo.descartar_carta();
 }, false);
+
+// Previne a rolagem da tela
+document.body.addEventListener('touchmove', function(ev) {
+    ev.preventDefault();
+}, { passive: false });
 
 main();

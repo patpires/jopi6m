@@ -146,14 +146,14 @@ color:#4bf753;
 
 #jogo .pilha_fundacao>.carta{
   margin-top: 0px !important;
-  transform: translateY(-10px);
+  transform: translateY(0px);
   position: absolute;
   border-color:  black;
 }
 
 #jogo .pilha_fundacao .carta .carta-virada{
   margin-top: 0px !important;
-  transform: translateY(-10px);
+  transform: translateY(0px);
   position: absolute;
   border-color:  black;
 }
